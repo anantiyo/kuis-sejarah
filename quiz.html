@@ -52,6 +52,12 @@
       margin: 20px 0;
     }
 
+    .rules {
+      font-size: 16px;
+      text-align: left;
+      margin: 10px 0;
+    }
+
     .options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -122,13 +128,32 @@
     <source src="salah.mp3" type="audio/mpeg">
     Browser Anda tidak mendukung elemen audio.
   </audio>
+  <audio id="lulus-sound" loop>
+    <source src="E:\SMK TELKOM\kumpulan karya html\quiz\sukses.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung elemen audio.
+  </audio>
+  <audio id="tidak-lulus-sound" loop>
+    <source src="E:\SMK TELKOM\kumpulan karya html\quiz\kegagalan.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung elemen audio.
+  </audio>
 
+  <!-- Input nama pengguna dan aturan -->
   <div id="name-input" class="container">
-    <h2>Masukkan Nama Anda</h2>
+    <h2>Selamat Datang di Kuis Sejarah Indonesia!</h2>
+    <div class="rules">
+      <h3>Aturan:</h3>
+      <ul>
+        <li>Jawab setiap pertanyaan dengan mengklik salah satu opsi.</li>
+        <li>Jawaban benar akan memberikan 100 poin.</li>
+        <li>Jawaban salah akan mengurangi 50 poin.</li>
+        <li>Skor minimal untuk lulus: 750 poin.</li>
+      </ul>
+    </div>
     <input type="text" id="user-name" class="input-name" placeholder="Nama Anda" />
     <button class="start-btn" onclick="startQuiz()">Mulai Kuis</button>
   </div>
 
+  <!-- Kontainer kuis -->
   <div id="quiz-container" class="container" style="display: none;">
     <div class="header">
       <h1>Kuis Sejarah Indonesia</h1>
@@ -202,13 +227,15 @@
 
       if (selectedIndex === currentData.correct) {
         score += 100;
-        document.getElementById("score").textContent = score;
         options[selectedIndex].classList.add('correct');
         playFeedbackSound(correctSound, backsound);
       } else {
+        score = Math.max(0, score - 50); // Kurangi 50 poin jika salah
         options[selectedIndex].classList.add('incorrect');
         playFeedbackSound(incorrectSound, backsound);
       }
+
+      document.getElementById("score").textContent = score;
 
       setTimeout(() => {
         currentQuestion++;
@@ -244,7 +271,19 @@
         <p>Status: ${resultText}</p>
       `;
 
-      document.getElementById("backsound").pause();
+      const backsound = document.getElementById("backsound");
+      const lulusSound = document.getElementById("lulus-sound");
+      const tidakLulusSound = document.getElementById("tidak-lulus-sound");
+
+      backsound.pause();
+
+      if (score >= 750) {
+        lulusSound.volume = 1.0;
+        lulusSound.play();
+      } else {
+        tidakLulusSound.volume = 1.0;
+        tidakLulusSound.play();
+      }
     }
   </script>
 </body>
